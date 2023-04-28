@@ -4,7 +4,6 @@ services:
     container_name: gatewayservice-container
     image: gateway.api  
     environment:
-      - redisconnection: "redis:6379";
     ports:
         - 6000:80            
     restart: on-failure        
@@ -38,7 +37,7 @@ services:
    sqldata:
     container_name: sqldata-container
     image:
-      "mcr.microsoft.com/mssql/server"
+      "mcr.microsoft.com/mssql/server:2019-latest"
     environment:
       - SA_PASSWORD=iamback.786A@
       - ACCEPT_EULA=Y
