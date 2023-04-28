@@ -21,7 +21,7 @@ namespace Gateway.API.BackgroundServices
         {
             while (!stoppingToken.IsCancellationRequested)
             {
-                //await Process();
+                await Process();
             }
 
         }

@@ -1,3 +1,4 @@
+using Gateway.API.BackgroundServices;
 using Gateway.API.Extensions;
 using Gateway.API.Hubs;
 using Gateway.API.Services.Abstract;
@@ -8,10 +9,10 @@ using StackExchange.Redis;
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
-//builder.Services.AddScoped<IRedisService,RedisService>();
+builder.Services.AddSingleton<IRedisService, RedisService>();
 
-//var multiplexer = ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection"));
-//builder.Services.AddSingleton<IConnectionMultiplexer>(multiplexer);
+var multiplexer = ConnectionMultiplexer.Connect(builder.Configuration.GetConnectionString("RedisConnection"));
+builder.Services.AddSingleton<IConnectionMultiplexer>(multiplexer);
 
 builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -42,6 +43,7 @@ builder.Services.AddSwaggerGen(c =>
                 });
 });
 builder.Services.AddSignalR();
+builder.Services.AddHostedService<DeliveryTrackService>();
 builder.Jwt();
 builder.AddCors();
 var app = builder.Build();

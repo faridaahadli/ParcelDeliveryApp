@@ -1,0 +1,63 @@
+version: "3.6"
+services:
+  gatewayservice:
+    container_name: gatewayservice-container
+    image: gateway.api  
+    environment:
+      - ConnectionString=Server=sqldata;Initial Catalog=DeliveryAuthDb;User Id=sa;Password=iamback.786A@;
+    ports:
+        - 6000:80            
+    restart: on-failure        
+    depends_on:
+        - authservice
+        - orderservice
+        - redis
+        
+  authservice:
+    container_name: authservice-container
+    image: auth.api  
+    environment:
+      - ConnectionString=Server=sqldata;Initial Catalog=DeliveryAuthDb;User Id=sa;Password=iamback.786A@;
+    ports:
+        - 6001:80 
+    restart: on-failure        
+    depends_on:
+        - sqldata  
+        
+   orderservice:
+    container_name: orderservice-container
+    image: order.api  
+    environment:
+      - ConnectionString=Server=sqldata;Initial Catalog=ParcelDeliveryDb;User Id=sa;Password=iamback.786A@;
+    ports:
+        - 6002:80  
+    restart: on-failure        
+    depends_on:
+        - sqldata 
+        
+   sqldata:
+    container_name: sqldata-container
+    image:
+      "mcr.microsoft.com/mssql/server"
+    environment:
+      - SA_PASSWORD=iamback.786A@
+      - ACCEPT_EULA=Y
+    ports:
+      - "5434:1433"
+    volumes:
+      - sqlvolumetaskdemo:/var/opt/mssql
+    restart: on-failure     
+
+   redis:
+    image: 'bitnami/redis:latest
+     ports:
+      - "6379:6379"
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+    volumes:
+      - $PWD/redis-data:/var/lib/redis
+      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf  
+    networks:
+      - app-network
+volumes:
+  sqlvolumetaskdemo:
