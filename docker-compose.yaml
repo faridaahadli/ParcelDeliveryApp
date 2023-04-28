@@ -4,7 +4,7 @@ services:
     container_name: gatewayservice-container
     image: gateway.api  
     environment:
-      - ConnectionString=Server=sqldata;Initial Catalog=DeliveryAuthDb;User Id=sa;Password=iamback.786A@;
+      - redisconnection: "redis:6379";
     ports:
         - 6000:80            
     restart: on-failure        
